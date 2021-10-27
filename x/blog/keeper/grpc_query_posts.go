@@ -6,6 +6,7 @@ import (
 	"github.com/cosmonaut/blog/x/blog/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -39,4 +40,21 @@ func (k Keeper) Posts(c context.Context, req *types.QueryPostsRequest) (*types.Q
 	}
 	// Return a struct containing a list of posts and pagination info
 	return &types.QueryPostsResponse{Post: posts, Pagination: pageRes}, nil
+}
+
+// Get single Post
+func (k Keeper) Post(c context.Context, req *types.QueryGetPostRequest) (*types.QueryGetPostResponse, error) {
+
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	post, found := k.GetPost(ctx, req.Id)
+	if !found {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	return &types.QueryGetPostResponse{Post: post}, nil
 }

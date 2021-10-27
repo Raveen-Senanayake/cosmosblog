@@ -60,6 +60,10 @@ export interface BlogQueryGetCommentResponse {
   Comment?: BlogComment;
 }
 
+export interface BlogQueryGetPostResponse {
+  Post?: BlogPost;
+}
+
 export interface BlogQueryPostsResponse {
   Post?: BlogPost[];
 
@@ -378,6 +382,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryComment = (id: string, params: RequestParams = {}) =>
     this.request<BlogQueryGetCommentResponse, RpcStatus>({
       path: `/cosmonaut/blog/blog/comment/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPost
+   * @summary Queries a post by id.
+   * @request GET:/cosmonaut/blog/blog/post/{id}
+   */
+  queryPost = (id: string, params: RequestParams = {}) =>
+    this.request<BlogQueryGetPostResponse, RpcStatus>({
+      path: `/cosmonaut/blog/blog/post/${id}`,
       method: "GET",
       format: "json",
       ...params,

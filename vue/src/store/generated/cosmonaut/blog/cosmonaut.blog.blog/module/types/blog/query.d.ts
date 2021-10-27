@@ -3,6 +3,7 @@ import { PageRequest, PageResponse } from '../cosmos/base/query/v1beta1/paginati
 import { Post } from '../blog/post';
 import { Comment } from '../blog/comment';
 export declare const protobufPackage = "cosmonaut.blog.blog";
+/** Get all Posts */
 export interface QueryPostsRequest {
     /** Adding pagination to request */
     pagination: PageRequest | undefined;
@@ -12,6 +13,13 @@ export interface QueryPostsResponse {
     Post: Post[];
     /** Adding pagination to response */
     pagination: PageResponse | undefined;
+}
+/** Get a single Posts */
+export interface QueryGetPostRequest {
+    id: number;
+}
+export interface QueryGetPostResponse {
+    Post: Post | undefined;
 }
 export interface QueryGetCommentRequest {
     id: number;
@@ -39,6 +47,20 @@ export declare const QueryPostsResponse: {
     fromJSON(object: any): QueryPostsResponse;
     toJSON(message: QueryPostsResponse): unknown;
     fromPartial(object: DeepPartial<QueryPostsResponse>): QueryPostsResponse;
+};
+export declare const QueryGetPostRequest: {
+    encode(message: QueryGetPostRequest, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): QueryGetPostRequest;
+    fromJSON(object: any): QueryGetPostRequest;
+    toJSON(message: QueryGetPostRequest): unknown;
+    fromPartial(object: DeepPartial<QueryGetPostRequest>): QueryGetPostRequest;
+};
+export declare const QueryGetPostResponse: {
+    encode(message: QueryGetPostResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): QueryGetPostResponse;
+    fromJSON(object: any): QueryGetPostResponse;
+    toJSON(message: QueryGetPostResponse): unknown;
+    fromPartial(object: DeepPartial<QueryGetPostResponse>): QueryGetPostResponse;
 };
 export declare const QueryGetCommentRequest: {
     encode(message: QueryGetCommentRequest, writer?: Writer): Writer;
@@ -72,6 +94,8 @@ export declare const QueryAllCommentResponse: {
 export interface Query {
     /** Queries a list of posts items. */
     Posts(request: QueryPostsRequest): Promise<QueryPostsResponse>;
+    /** Queries a post by id. */
+    Post(request: QueryGetPostRequest): Promise<QueryGetPostResponse>;
     /** Queries a comment by id. */
     Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse>;
     /** Queries a list of comment items. */
@@ -81,6 +105,7 @@ export declare class QueryClientImpl implements Query {
     private readonly rpc;
     constructor(rpc: Rpc);
     Posts(request: QueryPostsRequest): Promise<QueryPostsResponse>;
+    Post(request: QueryGetPostRequest): Promise<QueryGetPostResponse>;
     Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse>;
     CommentAll(request: QueryAllCommentRequest): Promise<QueryAllCommentResponse>;
 }

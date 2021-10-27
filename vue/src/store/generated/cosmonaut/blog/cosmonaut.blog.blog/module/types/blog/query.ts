@@ -7,6 +7,7 @@ import { Comment } from '../blog/comment'
 
 export const protobufPackage = 'cosmonaut.blog.blog'
 
+/** Get all Posts */
 export interface QueryPostsRequest {
   /** Adding pagination to request */
   pagination: PageRequest | undefined
@@ -17,6 +18,15 @@ export interface QueryPostsResponse {
   Post: Post[]
   /** Adding pagination to response */
   pagination: PageResponse | undefined
+}
+
+/** Get a single Posts */
+export interface QueryGetPostRequest {
+  id: number
+}
+
+export interface QueryGetPostResponse {
+  Post: Post | undefined
 }
 
 export interface QueryGetCommentRequest {
@@ -165,6 +175,116 @@ export const QueryPostsResponse = {
       message.pagination = PageResponse.fromPartial(object.pagination)
     } else {
       message.pagination = undefined
+    }
+    return message
+  }
+}
+
+const baseQueryGetPostRequest: object = { id: 0 }
+
+export const QueryGetPostRequest = {
+  encode(message: QueryGetPostRequest, writer: Writer = Writer.create()): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id)
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryGetPostRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryGetPostRequest } as QueryGetPostRequest
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long)
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryGetPostRequest {
+    const message = { ...baseQueryGetPostRequest } as QueryGetPostRequest
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id)
+    } else {
+      message.id = 0
+    }
+    return message
+  },
+
+  toJSON(message: QueryGetPostRequest): unknown {
+    const obj: any = {}
+    message.id !== undefined && (obj.id = message.id)
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryGetPostRequest>): QueryGetPostRequest {
+    const message = { ...baseQueryGetPostRequest } as QueryGetPostRequest
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id
+    } else {
+      message.id = 0
+    }
+    return message
+  }
+}
+
+const baseQueryGetPostResponse: object = {}
+
+export const QueryGetPostResponse = {
+  encode(message: QueryGetPostResponse, writer: Writer = Writer.create()): Writer {
+    if (message.Post !== undefined) {
+      Post.encode(message.Post, writer.uint32(10).fork()).ldelim()
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryGetPostResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryGetPostResponse } as QueryGetPostResponse
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.Post = Post.decode(reader, reader.uint32())
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryGetPostResponse {
+    const message = { ...baseQueryGetPostResponse } as QueryGetPostResponse
+    if (object.Post !== undefined && object.Post !== null) {
+      message.Post = Post.fromJSON(object.Post)
+    } else {
+      message.Post = undefined
+    }
+    return message
+  },
+
+  toJSON(message: QueryGetPostResponse): unknown {
+    const obj: any = {}
+    message.Post !== undefined && (obj.Post = message.Post ? Post.toJSON(message.Post) : undefined)
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryGetPostResponse>): QueryGetPostResponse {
+    const message = { ...baseQueryGetPostResponse } as QueryGetPostResponse
+    if (object.Post !== undefined && object.Post !== null) {
+      message.Post = Post.fromPartial(object.Post)
+    } else {
+      message.Post = undefined
     }
     return message
   }
@@ -418,6 +538,8 @@ export const QueryAllCommentResponse = {
 export interface Query {
   /** Queries a list of posts items. */
   Posts(request: QueryPostsRequest): Promise<QueryPostsResponse>
+  /** Queries a post by id. */
+  Post(request: QueryGetPostRequest): Promise<QueryGetPostResponse>
   /** Queries a comment by id. */
   Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse>
   /** Queries a list of comment items. */
@@ -433,6 +555,12 @@ export class QueryClientImpl implements Query {
     const data = QueryPostsRequest.encode(request).finish()
     const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'Posts', data)
     return promise.then((data) => QueryPostsResponse.decode(new Reader(data)))
+  }
+
+  Post(request: QueryGetPostRequest): Promise<QueryGetPostResponse> {
+    const data = QueryGetPostRequest.encode(request).finish()
+    const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'Post', data)
+    return promise.then((data) => QueryGetPostResponse.decode(new Reader(data)))
   }
 
   Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse> {

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -29,6 +30,39 @@ func CmdPosts() *cobra.Command {
 			params := &types.QueryPostsRequest{}
 
 			res, err := queryClient.Posts(cmd.Context(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowPost() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-post [id]",
+		Short: "shows a post",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryGetPostRequest{
+				Id: id,
+			}
+
+			res, err := queryClient.Post(context.Background(), params)
 			if err != nil {
 				return err
 			}

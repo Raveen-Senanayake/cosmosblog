@@ -132,6 +132,108 @@ export const QueryPostsResponse = {
         return message;
     }
 };
+const baseQueryGetPostRequest = { id: 0 };
+export const QueryGetPostRequest = {
+    encode(message, writer = Writer.create()) {
+        if (message.id !== 0) {
+            writer.uint32(8).uint64(message.id);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryGetPostRequest };
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.id = longToNumber(reader.uint64());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseQueryGetPostRequest };
+        if (object.id !== undefined && object.id !== null) {
+            message.id = Number(object.id);
+        }
+        else {
+            message.id = 0;
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        message.id !== undefined && (obj.id = message.id);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseQueryGetPostRequest };
+        if (object.id !== undefined && object.id !== null) {
+            message.id = object.id;
+        }
+        else {
+            message.id = 0;
+        }
+        return message;
+    }
+};
+const baseQueryGetPostResponse = {};
+export const QueryGetPostResponse = {
+    encode(message, writer = Writer.create()) {
+        if (message.Post !== undefined) {
+            Post.encode(message.Post, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryGetPostResponse };
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.Post = Post.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseQueryGetPostResponse };
+        if (object.Post !== undefined && object.Post !== null) {
+            message.Post = Post.fromJSON(object.Post);
+        }
+        else {
+            message.Post = undefined;
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        message.Post !== undefined && (obj.Post = message.Post ? Post.toJSON(message.Post) : undefined);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseQueryGetPostResponse };
+        if (object.Post !== undefined && object.Post !== null) {
+            message.Post = Post.fromPartial(object.Post);
+        }
+        else {
+            message.Post = undefined;
+        }
+        return message;
+    }
+};
 const baseQueryGetCommentRequest = { id: 0 };
 export const QueryGetCommentRequest = {
     encode(message, writer = Writer.create()) {
@@ -369,6 +471,11 @@ export class QueryClientImpl {
         const data = QueryPostsRequest.encode(request).finish();
         const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'Posts', data);
         return promise.then((data) => QueryPostsResponse.decode(new Reader(data)));
+    }
+    Post(request) {
+        const data = QueryGetPostRequest.encode(request).finish();
+        const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'Post', data);
+        return promise.then((data) => QueryGetPostResponse.decode(new Reader(data)));
     }
     Comment(request) {
         const data = QueryGetCommentRequest.encode(request).finish();

@@ -39,6 +39,9 @@ export interface BlogQueryAllCommentResponse {
 export interface BlogQueryGetCommentResponse {
     Comment?: BlogComment;
 }
+export interface BlogQueryGetPostResponse {
+    Post?: BlogPost;
+}
 export interface BlogQueryPostsResponse {
     Post?: BlogPost[];
     /**
@@ -195,6 +198,15 @@ export declare class Api<SecurityDataType extends unknown> extends HttpClient<Se
      * @request GET:/cosmonaut/blog/blog/comment/{id}
      */
     queryComment: (id: string, params?: RequestParams) => Promise<HttpResponse<BlogQueryGetCommentResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryPost
+     * @summary Queries a post by id.
+     * @request GET:/cosmonaut/blog/blog/post/{id}
+     */
+    queryPost: (id: string, params?: RequestParams) => Promise<HttpResponse<BlogQueryGetPostResponse, RpcStatus>>;
     /**
      * No description
      *

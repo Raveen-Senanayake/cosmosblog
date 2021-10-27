@@ -17,6 +17,11 @@ service Query {
 		option (google.api.http).get = "/cosmonaut/blog/blog/posts";
 	}
 
+	// Queries a post by id.
+	rpc Post(QueryGetPostRequest) returns (QueryGetPostResponse) {
+		option (google.api.http).get = "/cosmonaut/blog/blog/post/{id}";
+	}
+
 // Queries a comment by id.
 	rpc Comment(QueryGetCommentRequest) returns (QueryGetCommentResponse) {
 		option (google.api.http).get = "/cosmonaut/blog/blog/comment/{id}";
@@ -30,6 +35,7 @@ service Query {
 // this line is used by starport scaffolding # 2
 }
 
+// Get all Posts
 message QueryPostsRequest {
   // Adding pagination to request
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
@@ -41,6 +47,17 @@ message QueryPostsResponse {
   // Adding pagination to response
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
+
+
+// Get a single Posts
+message QueryGetPostRequest {
+	uint64 id = 1;
+}
+
+message QueryGetPostResponse {
+	Post Post = 1 [(gogoproto.nullable) = false];
+}
+
 message QueryGetCommentRequest {
 	uint64 id = 1;
 }
