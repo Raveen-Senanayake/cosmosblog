@@ -52,3 +52,33 @@ func (k Keeper) SetPostCount(ctx sdk.Context, count uint64) {
 	// Set the value of Post-count- to count
 	store.Set(byteKey, bz)
 }
+
+// GetPost returns a Post from its id
+func (k Keeper) GetPost(ctx sdk.Context, id uint64) (val types.Post, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
+	b := store.Get(GetPostIDBytes(id))
+	if b == nil {
+		return val, false
+	}
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+// SetPost set a specific comment in the store
+func (k Keeper) SetPost(ctx sdk.Context, post types.Post) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
+	b := k.cdc.MustMarshal(&post)
+	store.Set(GetCommentIDBytes(post.Id), b)
+}
+
+// GetPostIDBytes returns the byte representation of the ID
+func GetPostIDBytes(id uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
+	return bz
+}
+
+// GetPostIDFromBytes returns ID in uint64 format from a byte array
+func GetPostIDFromBytes(bz []byte) uint64 {
+	return binary.BigEndian.Uint64(bz)
+}
