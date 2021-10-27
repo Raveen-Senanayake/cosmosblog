@@ -1,7 +1,20 @@
+export interface BlogComment {
+    /** @format uint64 */
+    id?: string;
+    body?: string;
+    postID?: string;
+    creator?: string;
+}
+export interface BlogMsgCreateCommentResponse {
+    /** @format uint64 */
+    id?: string;
+}
 export interface BlogMsgCreatePostResponse {
     /** @format uint64 */
     id?: string;
 }
+export declare type BlogMsgDeleteCommentResponse = object;
+export declare type BlogMsgUpdateCommentResponse = object;
 export interface BlogPost {
     creator?: string;
     /** @format uint64 */
@@ -9,6 +22,22 @@ export interface BlogPost {
     title?: string;
     body?: string;
     commentslist?: string[];
+}
+export interface BlogQueryAllCommentResponse {
+    Comment?: BlogComment[];
+    /**
+     * PageResponse is to be embedded in gRPC response messages where the
+     * corresponding request message has used PageRequest.
+     *
+     *  message SomeResponse {
+     *          repeated Bar results = 1;
+     *          PageResponse page = 2;
+     *  }
+     */
+    pagination?: V1Beta1PageResponse;
+}
+export interface BlogQueryGetCommentResponse {
+    Comment?: BlogComment;
 }
 export interface BlogQueryPostsResponse {
     Post?: BlogPost[];
@@ -138,10 +167,34 @@ export declare class HttpClient<SecurityDataType = unknown> {
     request: <T = any, E = any>({ body, secure, path, type, query, format, baseUrl, cancelToken, ...params }: FullRequestParams) => Promise<HttpResponse<T, E>>;
 }
 /**
- * @title blog/genesis.proto
+ * @title blog/comment.proto
  * @version version not set
  */
 export declare class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryCommentAll
+     * @summary Queries a list of comment items.
+     * @request GET:/cosmonaut/blog/blog/comment
+     */
+    queryCommentAll: (query?: {
+        "pagination.key"?: string;
+        "pagination.offset"?: string;
+        "pagination.limit"?: string;
+        "pagination.countTotal"?: boolean;
+        "pagination.reverse"?: boolean;
+    }, params?: RequestParams) => Promise<HttpResponse<BlogQueryAllCommentResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryComment
+     * @summary Queries a comment by id.
+     * @request GET:/cosmonaut/blog/blog/comment/{id}
+     */
+    queryComment: (id: string, params?: RequestParams) => Promise<HttpResponse<BlogQueryGetCommentResponse, RpcStatus>>;
     /**
      * No description
      *

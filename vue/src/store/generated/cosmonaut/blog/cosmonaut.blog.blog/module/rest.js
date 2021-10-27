@@ -130,12 +130,41 @@ export class HttpClient {
     }
 }
 /**
- * @title blog/genesis.proto
+ * @title blog/comment.proto
  * @version version not set
  */
 export class Api extends HttpClient {
     constructor() {
         super(...arguments);
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryCommentAll
+         * @summary Queries a list of comment items.
+         * @request GET:/cosmonaut/blog/blog/comment
+         */
+        this.queryCommentAll = (query, params = {}) => this.request({
+            path: `/cosmonaut/blog/blog/comment`,
+            method: "GET",
+            query: query,
+            format: "json",
+            ...params,
+        });
+        /**
+         * No description
+         *
+         * @tags Query
+         * @name QueryComment
+         * @summary Queries a comment by id.
+         * @request GET:/cosmonaut/blog/blog/comment/{id}
+         */
+        this.queryComment = (id, params = {}) => this.request({
+            path: `/cosmonaut/blog/blog/comment/${id}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
         /**
          * No description
          *

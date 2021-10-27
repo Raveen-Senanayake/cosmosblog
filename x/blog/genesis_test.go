@@ -11,6 +11,15 @@ import (
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
+		CommentList: []types.Comment{
+			{
+				Id: 0,
+			},
+			{
+				Id: 1,
+			},
+		},
+		CommentCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -19,5 +28,8 @@ func TestGenesis(t *testing.T) {
 	got := blog.ExportGenesis(ctx, *k)
 	require.NotNil(t, got)
 
+	require.Len(t, got.CommentList, len(genesisState.CommentList))
+	require.Subset(t, genesisState.CommentList, got.CommentList)
+	require.Equal(t, genesisState.CommentCount, got.CommentCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
