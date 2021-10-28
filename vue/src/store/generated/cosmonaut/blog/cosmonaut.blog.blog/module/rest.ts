@@ -64,6 +64,10 @@ export interface BlogQueryGetPostResponse {
   Post?: BlogPost;
 }
 
+export interface BlogQueryListOfCommentResponse {
+  Comment?: BlogComment[];
+}
+
 export interface BlogQueryPostsResponse {
   Post?: BlogPost[];
 
@@ -367,6 +371,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       path: `/cosmonaut/blog/blog/comment`,
       method: "GET",
       query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryCommentIds
+   * @summary Queries a list of comment given some keys.
+   * @request GET:/cosmonaut/blog/blog/comment/{ids}
+   */
+  queryCommentIds = (ids: string[], params: RequestParams = {}) =>
+    this.request<BlogQueryListOfCommentResponse, RpcStatus>({
+      path: `/cosmonaut/blog/blog/comment/${ids}`,
+      method: "GET",
       format: "json",
       ...params,
     });

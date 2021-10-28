@@ -53,3 +53,28 @@ func (k Keeper) Comment(c context.Context, req *types.QueryGetCommentRequest) (*
 
 	return &types.QueryGetCommentResponse{Comment: comment}, nil
 }
+
+func (k Keeper) CommentIds(c context.Context, req *types.QueryListOfCommentRequest) (*types.QueryListOfCommentResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var comments []types.Comment
+	ctx := sdk.UnwrapSDKContext(c)
+
+	listOfComments := []types.Comment{}
+
+	listOfIDS := req.Ids
+
+	for _, s := range listOfIDS {
+
+		comment, found := k.GetComment(ctx, s)
+
+		if !found {
+			return nil, sdkerrors.ErrKeyNotFound
+		}
+		listOfComments = append(listOfComments, comment)
+	}
+
+	return &types.QueryListOfCommentResponse{Comment: comments}, nil
+}

@@ -34,6 +34,13 @@ export interface QueryAllCommentResponse {
     Comment: Comment[];
     pagination: PageResponse | undefined;
 }
+/** get list of comments */
+export interface QueryListOfCommentRequest {
+    ids: number[];
+}
+export interface QueryListOfCommentResponse {
+    Comment: Comment[];
+}
 export declare const QueryPostsRequest: {
     encode(message: QueryPostsRequest, writer?: Writer): Writer;
     decode(input: Reader | Uint8Array, length?: number): QueryPostsRequest;
@@ -90,6 +97,20 @@ export declare const QueryAllCommentResponse: {
     toJSON(message: QueryAllCommentResponse): unknown;
     fromPartial(object: DeepPartial<QueryAllCommentResponse>): QueryAllCommentResponse;
 };
+export declare const QueryListOfCommentRequest: {
+    encode(message: QueryListOfCommentRequest, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): QueryListOfCommentRequest;
+    fromJSON(object: any): QueryListOfCommentRequest;
+    toJSON(message: QueryListOfCommentRequest): unknown;
+    fromPartial(object: DeepPartial<QueryListOfCommentRequest>): QueryListOfCommentRequest;
+};
+export declare const QueryListOfCommentResponse: {
+    encode(message: QueryListOfCommentResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): QueryListOfCommentResponse;
+    fromJSON(object: any): QueryListOfCommentResponse;
+    toJSON(message: QueryListOfCommentResponse): unknown;
+    fromPartial(object: DeepPartial<QueryListOfCommentResponse>): QueryListOfCommentResponse;
+};
 /** Query defines the gRPC querier service. */
 export interface Query {
     /** Queries a list of posts items. */
@@ -100,6 +121,8 @@ export interface Query {
     Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse>;
     /** Queries a list of comment items. */
     CommentAll(request: QueryAllCommentRequest): Promise<QueryAllCommentResponse>;
+    /** Queries a list of comment given some keys. */
+    CommentIds(request: QueryListOfCommentRequest): Promise<QueryListOfCommentResponse>;
 }
 export declare class QueryClientImpl implements Query {
     private readonly rpc;
@@ -108,6 +131,7 @@ export declare class QueryClientImpl implements Query {
     Post(request: QueryGetPostRequest): Promise<QueryGetPostResponse>;
     Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse>;
     CommentAll(request: QueryAllCommentRequest): Promise<QueryAllCommentResponse>;
+    CommentIds(request: QueryListOfCommentRequest): Promise<QueryListOfCommentResponse>;
 }
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;

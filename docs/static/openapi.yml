@@ -129,6 +129,60 @@ paths:
           type: boolean
       tags:
         - Query
+  '/cosmonaut/blog/blog/comment/{ids}':
+    get:
+      summary: Queries a list of comment given some keys.
+      operationId: CosmonautBlogBlogCommentIds
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Comment:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    body:
+                      type: string
+                    postID:
+                      type: string
+                    creator:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: ids
+          in: path
+          required: true
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: csv
+          minItems: 1
+      tags:
+        - Query
   '/cosmonaut/blog/blog/comment/{id}':
     get:
       summary: Queries a comment by id.
@@ -12982,6 +13036,23 @@ definitions:
             items:
               type: string
               format: uint64
+  cosmonaut.blog.blog.QueryListOfCommentResponse:
+    type: object
+    properties:
+      Comment:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            body:
+              type: string
+            postID:
+              type: string
+            creator:
+              type: string
   cosmonaut.blog.blog.QueryPostsResponse:
     type: object
     properties:

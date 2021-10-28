@@ -67,7 +67,24 @@ func CmdShowPost() *cobra.Command {
 				return err
 			}
 
+			// commentList := res.Post.Commentslist
+
+			// commentListPrint := []*types.QueryGetCommentResponse{}
+
+			// for i := uint64(0); i < uint64(len(commentList)); i++ {
+
+			// 	params := &types.QueryGetCommentRequest{
+			// 		Id: id,
+			// 	}
+			// 	res, err := queryClient.Comment(context.Background(), params)
+			// 	if err != nil {
+			// 		return err
+			// 	}
+			// 	commentListPrint = append(commentListPrint, res)
+			// }
+
 			return clientCtx.PrintProto(res)
+
 		},
 	}
 

@@ -46,6 +46,15 @@ export interface QueryAllCommentResponse {
   pagination: PageResponse | undefined
 }
 
+/** get list of comments */
+export interface QueryListOfCommentRequest {
+  ids: number[]
+}
+
+export interface QueryListOfCommentResponse {
+  Comment: Comment[]
+}
+
 const baseQueryPostsRequest: object = {}
 
 export const QueryPostsRequest = {
@@ -534,6 +543,139 @@ export const QueryAllCommentResponse = {
   }
 }
 
+const baseQueryListOfCommentRequest: object = { ids: 0 }
+
+export const QueryListOfCommentRequest = {
+  encode(message: QueryListOfCommentRequest, writer: Writer = Writer.create()): Writer {
+    writer.uint32(10).fork()
+    for (const v of message.ids) {
+      writer.uint64(v)
+    }
+    writer.ldelim()
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryListOfCommentRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryListOfCommentRequest } as QueryListOfCommentRequest
+    message.ids = []
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos
+            while (reader.pos < end2) {
+              message.ids.push(longToNumber(reader.uint64() as Long))
+            }
+          } else {
+            message.ids.push(longToNumber(reader.uint64() as Long))
+          }
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryListOfCommentRequest {
+    const message = { ...baseQueryListOfCommentRequest } as QueryListOfCommentRequest
+    message.ids = []
+    if (object.ids !== undefined && object.ids !== null) {
+      for (const e of object.ids) {
+        message.ids.push(Number(e))
+      }
+    }
+    return message
+  },
+
+  toJSON(message: QueryListOfCommentRequest): unknown {
+    const obj: any = {}
+    if (message.ids) {
+      obj.ids = message.ids.map((e) => e)
+    } else {
+      obj.ids = []
+    }
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryListOfCommentRequest>): QueryListOfCommentRequest {
+    const message = { ...baseQueryListOfCommentRequest } as QueryListOfCommentRequest
+    message.ids = []
+    if (object.ids !== undefined && object.ids !== null) {
+      for (const e of object.ids) {
+        message.ids.push(e)
+      }
+    }
+    return message
+  }
+}
+
+const baseQueryListOfCommentResponse: object = {}
+
+export const QueryListOfCommentResponse = {
+  encode(message: QueryListOfCommentResponse, writer: Writer = Writer.create()): Writer {
+    for (const v of message.Comment) {
+      Comment.encode(v!, writer.uint32(10).fork()).ldelim()
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryListOfCommentResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryListOfCommentResponse } as QueryListOfCommentResponse
+    message.Comment = []
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.Comment.push(Comment.decode(reader, reader.uint32()))
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryListOfCommentResponse {
+    const message = { ...baseQueryListOfCommentResponse } as QueryListOfCommentResponse
+    message.Comment = []
+    if (object.Comment !== undefined && object.Comment !== null) {
+      for (const e of object.Comment) {
+        message.Comment.push(Comment.fromJSON(e))
+      }
+    }
+    return message
+  },
+
+  toJSON(message: QueryListOfCommentResponse): unknown {
+    const obj: any = {}
+    if (message.Comment) {
+      obj.Comment = message.Comment.map((e) => (e ? Comment.toJSON(e) : undefined))
+    } else {
+      obj.Comment = []
+    }
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryListOfCommentResponse>): QueryListOfCommentResponse {
+    const message = { ...baseQueryListOfCommentResponse } as QueryListOfCommentResponse
+    message.Comment = []
+    if (object.Comment !== undefined && object.Comment !== null) {
+      for (const e of object.Comment) {
+        message.Comment.push(Comment.fromPartial(e))
+      }
+    }
+    return message
+  }
+}
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Queries a list of posts items. */
@@ -544,6 +686,8 @@ export interface Query {
   Comment(request: QueryGetCommentRequest): Promise<QueryGetCommentResponse>
   /** Queries a list of comment items. */
   CommentAll(request: QueryAllCommentRequest): Promise<QueryAllCommentResponse>
+  /** Queries a list of comment given some keys. */
+  CommentIds(request: QueryListOfCommentRequest): Promise<QueryListOfCommentResponse>
 }
 
 export class QueryClientImpl implements Query {
@@ -573,6 +717,12 @@ export class QueryClientImpl implements Query {
     const data = QueryAllCommentRequest.encode(request).finish()
     const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'CommentAll', data)
     return promise.then((data) => QueryAllCommentResponse.decode(new Reader(data)))
+  }
+
+  CommentIds(request: QueryListOfCommentRequest): Promise<QueryListOfCommentResponse> {
+    const data = QueryListOfCommentRequest.encode(request).finish()
+    const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'CommentIds', data)
+    return promise.then((data) => QueryListOfCommentResponse.decode(new Reader(data)))
   }
 }
 

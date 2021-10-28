@@ -155,6 +155,20 @@ export class Api extends HttpClient {
          * No description
          *
          * @tags Query
+         * @name QueryCommentIds
+         * @summary Queries a list of comment given some keys.
+         * @request GET:/cosmonaut/blog/blog/comment/{ids}
+         */
+        this.queryCommentIds = (ids, params = {}) => this.request({
+            path: `/cosmonaut/blog/blog/comment/${ids}`,
+            method: "GET",
+            format: "json",
+            ...params,
+        });
+        /**
+         * No description
+         *
+         * @tags Query
          * @name QueryComment
          * @summary Queries a comment by id.
          * @request GET:/cosmonaut/blog/blog/comment/{id}

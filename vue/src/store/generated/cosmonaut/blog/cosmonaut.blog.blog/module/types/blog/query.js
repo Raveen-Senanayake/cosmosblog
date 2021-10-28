@@ -463,6 +463,130 @@ export const QueryAllCommentResponse = {
         return message;
     }
 };
+const baseQueryListOfCommentRequest = { ids: 0 };
+export const QueryListOfCommentRequest = {
+    encode(message, writer = Writer.create()) {
+        writer.uint32(10).fork();
+        for (const v of message.ids) {
+            writer.uint64(v);
+        }
+        writer.ldelim();
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryListOfCommentRequest };
+        message.ids = [];
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    if ((tag & 7) === 2) {
+                        const end2 = reader.uint32() + reader.pos;
+                        while (reader.pos < end2) {
+                            message.ids.push(longToNumber(reader.uint64()));
+                        }
+                    }
+                    else {
+                        message.ids.push(longToNumber(reader.uint64()));
+                    }
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseQueryListOfCommentRequest };
+        message.ids = [];
+        if (object.ids !== undefined && object.ids !== null) {
+            for (const e of object.ids) {
+                message.ids.push(Number(e));
+            }
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.ids) {
+            obj.ids = message.ids.map((e) => e);
+        }
+        else {
+            obj.ids = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseQueryListOfCommentRequest };
+        message.ids = [];
+        if (object.ids !== undefined && object.ids !== null) {
+            for (const e of object.ids) {
+                message.ids.push(e);
+            }
+        }
+        return message;
+    }
+};
+const baseQueryListOfCommentResponse = {};
+export const QueryListOfCommentResponse = {
+    encode(message, writer = Writer.create()) {
+        for (const v of message.Comment) {
+            Comment.encode(v, writer.uint32(10).fork()).ldelim();
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseQueryListOfCommentResponse };
+        message.Comment = [];
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.Comment.push(Comment.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseQueryListOfCommentResponse };
+        message.Comment = [];
+        if (object.Comment !== undefined && object.Comment !== null) {
+            for (const e of object.Comment) {
+                message.Comment.push(Comment.fromJSON(e));
+            }
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        if (message.Comment) {
+            obj.Comment = message.Comment.map((e) => (e ? Comment.toJSON(e) : undefined));
+        }
+        else {
+            obj.Comment = [];
+        }
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseQueryListOfCommentResponse };
+        message.Comment = [];
+        if (object.Comment !== undefined && object.Comment !== null) {
+            for (const e of object.Comment) {
+                message.Comment.push(Comment.fromPartial(e));
+            }
+        }
+        return message;
+    }
+};
 export class QueryClientImpl {
     constructor(rpc) {
         this.rpc = rpc;
@@ -486,6 +610,11 @@ export class QueryClientImpl {
         const data = QueryAllCommentRequest.encode(request).finish();
         const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'CommentAll', data);
         return promise.then((data) => QueryAllCommentResponse.decode(new Reader(data)));
+    }
+    CommentIds(request) {
+        const data = QueryListOfCommentRequest.encode(request).finish();
+        const promise = this.rpc.request('cosmonaut.blog.blog.Query', 'CommentIds', data);
+        return promise.then((data) => QueryListOfCommentResponse.decode(new Reader(data)));
     }
 }
 var globalThis = (() => {

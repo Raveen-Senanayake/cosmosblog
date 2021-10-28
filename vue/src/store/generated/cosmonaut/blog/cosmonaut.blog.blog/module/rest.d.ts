@@ -42,6 +42,9 @@ export interface BlogQueryGetCommentResponse {
 export interface BlogQueryGetPostResponse {
     Post?: BlogPost;
 }
+export interface BlogQueryListOfCommentResponse {
+    Comment?: BlogComment[];
+}
 export interface BlogQueryPostsResponse {
     Post?: BlogPost[];
     /**
@@ -189,6 +192,15 @@ export declare class Api<SecurityDataType extends unknown> extends HttpClient<Se
         "pagination.countTotal"?: boolean;
         "pagination.reverse"?: boolean;
     }, params?: RequestParams) => Promise<HttpResponse<BlogQueryAllCommentResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryCommentIds
+     * @summary Queries a list of comment given some keys.
+     * @request GET:/cosmonaut/blog/blog/comment/{ids}
+     */
+    queryCommentIds: (ids: string[], params?: RequestParams) => Promise<HttpResponse<BlogQueryListOfCommentResponse, RpcStatus>>;
     /**
      * No description
      *
