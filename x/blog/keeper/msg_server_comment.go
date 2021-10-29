@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/cosmonaut/blog/x/blog/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,6 +18,7 @@ func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComm
 		Creator: msg.Creator,
 		Body:    msg.Body,
 		PostID:  msg.PostID,
+		Created: time.Now().String(),
 	}
 
 	id := k.AppendComment(
@@ -37,16 +39,26 @@ func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComm
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("Post doesnt exist"))
 	}
 
+	if post.Creator == msg.Creator {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("Owner of the post cant comment on their own post"))
+	}
+
 	//append to list
-	currentCommentList := post.GetCommentslist()
+	currentCommentList := post.GetListofcommentids()
 	currentCommentList = append(currentCommentList, id)
+
+	// apend to comment
+
+	currentComment := post.GetListofcomments()
+	currentComment = append(currentComment, &comment)
 
 	// create updated post
 	var updatedpost = types.Post{
-		Creator:      post.GetCreator(),
-		Title:        post.GetTitle(),
-		Body:         post.GetBody(),
-		Commentslist: currentCommentList,
+		Creator:          post.GetCreator(),
+		Title:            post.GetTitle(),
+		Body:             post.GetBody(),
+		Listofcommentids: currentCommentList,
+		Listofcomments:   currentComment,
 	}
 
 	// set post

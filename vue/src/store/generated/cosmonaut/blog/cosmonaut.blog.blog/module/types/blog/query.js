@@ -187,7 +187,7 @@ const baseQueryGetPostResponse = {};
 export const QueryGetPostResponse = {
     encode(message, writer = Writer.create()) {
         if (message.Post !== undefined) {
-            Post.encode(message.Post, writer.uint32(10).fork()).ldelim();
+            Post.encode(message.Post, writer.uint32(18).fork()).ldelim();
         }
         return writer;
     },
@@ -198,7 +198,7 @@ export const QueryGetPostResponse = {
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
-                case 1:
+                case 2:
                     message.Post = Post.decode(reader, reader.uint32());
                     break;
                 default:

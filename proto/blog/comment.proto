@@ -1,14 +1,13 @@
 syntax = "proto3";
 package cosmonaut.blog.blog;
 
+
 option go_package = "github.com/cosmonaut/blog/x/blog/types";
-
-import "gogoproto/gogo.proto";
-
 
 message Comment {
   uint64 id = 1;
   string body = 2; 
   string postID = 3; 
   string creator = 4;
+  string created = 5;
 }

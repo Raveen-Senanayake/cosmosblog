@@ -11,6 +11,19 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 )
 
+// type PostInfo struct {
+// 	creator string `json:"creator"`
+// 	id      uint   `json:"id"`
+// 	title   string `json:"title"`
+// 	body    string `json:"body"`
+// 	commentlist []uint64 `json:commentlist`
+// }
+
+type PostCommentCombo struct {
+	Post         types.Post
+	PostComments []types.Comment
+}
+
 var _ = strconv.Itoa(0)
 
 func CmdPosts() *cobra.Command {
@@ -67,24 +80,15 @@ func CmdShowPost() *cobra.Command {
 				return err
 			}
 
-			// commentList := res.Post.Commentslist
+			// post := res.GetPost()
 
-			// commentListPrint := []*types.QueryGetCommentResponse{}
+			// comments := res.GetComment()
 
-			// for i := uint64(0); i < uint64(len(commentList)); i++ {
-
-			// 	params := &types.QueryGetCommentRequest{
-			// 		Id: id,
-			// 	}
-			// 	res, err := queryClient.Comment(context.Background(), params)
-			// 	if err != nil {
-			// 		return err
-			// 	}
-			// 	commentListPrint = append(commentListPrint, res)
+			// postjson := PostCommentCombo{
+			// 	Post: post, PostComments: comments,
 			// }
 
-			return clientCtx.PrintProto(res)
-
+			return clientCtx.PrintObjectLegacy(res)
 		},
 	}
 

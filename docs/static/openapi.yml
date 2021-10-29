@@ -28,6 +28,8 @@ paths:
                       type: string
                     creator:
                       type: string
+                    created:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -153,6 +155,8 @@ paths:
                       type: string
                     creator:
                       type: string
+                    created:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -205,6 +209,8 @@ paths:
                     type: string
                   creator:
                     type: string
+                  created:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -253,11 +259,27 @@ paths:
                     type: string
                   body:
                     type: string
-                  commentslist:
+                  listofcommentids:
                     type: array
                     items:
                       type: string
                       format: uint64
+                  listofcomments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uint64
+                        body:
+                          type: string
+                        postID:
+                          type: string
+                        creator:
+                          type: string
+                        created:
+                          type: string
         default:
           description: An unexpected error response.
           schema:
@@ -308,11 +330,27 @@ paths:
                       type: string
                     body:
                       type: string
-                    commentslist:
+                    listofcommentids:
                       type: array
                       items:
                         type: string
                         format: uint64
+                    listofcomments:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uint64
+                          body:
+                            type: string
+                          postID:
+                            type: string
+                          creator:
+                            type: string
+                          created:
+                            type: string
                 title: Returning a list of posts
               pagination:
                 type: object
@@ -12926,6 +12964,8 @@ definitions:
         type: string
       creator:
         type: string
+      created:
+        type: string
   cosmonaut.blog.blog.MsgCreateCommentResponse:
     type: object
     properties:
@@ -12954,11 +12994,27 @@ definitions:
         type: string
       body:
         type: string
-      commentslist:
+      listofcommentids:
         type: array
         items:
           type: string
           format: uint64
+      listofcomments:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            body:
+              type: string
+            postID:
+              type: string
+            creator:
+              type: string
+            created:
+              type: string
   cosmonaut.blog.blog.QueryAllCommentResponse:
     type: object
     properties:
@@ -12975,6 +13031,8 @@ definitions:
             postID:
               type: string
             creator:
+              type: string
+            created:
               type: string
       pagination:
         type: object
@@ -13016,6 +13074,8 @@ definitions:
             type: string
           creator:
             type: string
+          created:
+            type: string
   cosmonaut.blog.blog.QueryGetPostResponse:
     type: object
     properties:
@@ -13031,11 +13091,27 @@ definitions:
             type: string
           body:
             type: string
-          commentslist:
+          listofcommentids:
             type: array
             items:
               type: string
               format: uint64
+          listofcomments:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uint64
+                body:
+                  type: string
+                postID:
+                  type: string
+                creator:
+                  type: string
+                created:
+                  type: string
   cosmonaut.blog.blog.QueryListOfCommentResponse:
     type: object
     properties:
@@ -13052,6 +13128,8 @@ definitions:
             postID:
               type: string
             creator:
+              type: string
+            created:
               type: string
   cosmonaut.blog.blog.QueryPostsResponse:
     type: object
@@ -13070,11 +13148,27 @@ definitions:
               type: string
             body:
               type: string
-            commentslist:
+            listofcommentids:
               type: array
               items:
                 type: string
                 format: uint64
+            listofcomments:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  body:
+                    type: string
+                  postID:
+                    type: string
+                  creator:
+                    type: string
+                  created:
+                    type: string
         title: Returning a list of posts
       pagination:
         type: object

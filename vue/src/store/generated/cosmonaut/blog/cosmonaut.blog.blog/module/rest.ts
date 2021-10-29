@@ -15,6 +15,7 @@ export interface BlogComment {
   body?: string;
   postID?: string;
   creator?: string;
+  created?: string;
 }
 
 export interface BlogMsgCreateCommentResponse {
@@ -38,7 +39,8 @@ export interface BlogPost {
   id?: string;
   title?: string;
   body?: string;
-  commentslist?: string[];
+  listofcommentids?: string[];
+  listofcomments?: BlogComment[];
 }
 
 export interface BlogQueryAllCommentResponse {

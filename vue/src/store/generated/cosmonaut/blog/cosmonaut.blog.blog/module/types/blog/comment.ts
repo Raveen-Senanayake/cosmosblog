@@ -9,9 +9,10 @@ export interface Comment {
   body: string
   postID: string
   creator: string
+  created: string
 }
 
-const baseComment: object = { id: 0, body: '', postID: '', creator: '' }
+const baseComment: object = { id: 0, body: '', postID: '', creator: '', created: '' }
 
 export const Comment = {
   encode(message: Comment, writer: Writer = Writer.create()): Writer {
@@ -26,6 +27,9 @@ export const Comment = {
     }
     if (message.creator !== '') {
       writer.uint32(34).string(message.creator)
+    }
+    if (message.created !== '') {
+      writer.uint32(42).string(message.created)
     }
     return writer
   },
@@ -48,6 +52,9 @@ export const Comment = {
           break
         case 4:
           message.creator = reader.string()
+          break
+        case 5:
+          message.created = reader.string()
           break
         default:
           reader.skipType(tag & 7)
@@ -79,6 +86,11 @@ export const Comment = {
     } else {
       message.creator = ''
     }
+    if (object.created !== undefined && object.created !== null) {
+      message.created = String(object.created)
+    } else {
+      message.created = ''
+    }
     return message
   },
 
@@ -88,6 +100,7 @@ export const Comment = {
     message.body !== undefined && (obj.body = message.body)
     message.postID !== undefined && (obj.postID = message.postID)
     message.creator !== undefined && (obj.creator = message.creator)
+    message.created !== undefined && (obj.created = message.created)
     return obj
   },
 
@@ -112,6 +125,11 @@ export const Comment = {
       message.creator = object.creator
     } else {
       message.creator = ''
+    }
+    if (object.created !== undefined && object.created !== null) {
+      message.created = object.created
+    } else {
+      message.created = ''
     }
     return message
   }

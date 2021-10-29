@@ -62,7 +62,7 @@ message QueryGetPostRequest {
 }
 
 message QueryGetPostResponse {
-	Post Post = 1 [(gogoproto.nullable) = false];
+	Post Post = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryGetCommentRequest {

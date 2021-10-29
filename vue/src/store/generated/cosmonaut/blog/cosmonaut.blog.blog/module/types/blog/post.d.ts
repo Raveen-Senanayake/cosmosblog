@@ -1,11 +1,13 @@
 import { Writer, Reader } from 'protobufjs/minimal';
+import { Comment } from '../blog/comment';
 export declare const protobufPackage = "cosmonaut.blog.blog";
 export interface Post {
     creator: string;
     id: number;
     title: string;
     body: string;
-    commentslist: number[];
+    listofcommentids: number[];
+    listofcomments: Comment[];
 }
 export declare const Post: {
     encode(message: Post, writer?: Writer): Writer;

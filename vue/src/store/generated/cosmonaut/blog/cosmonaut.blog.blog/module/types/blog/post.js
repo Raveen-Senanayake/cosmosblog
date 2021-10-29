@@ -1,8 +1,9 @@
 /* eslint-disable */
 import * as Long from 'long';
 import { util, configure, Writer, Reader } from 'protobufjs/minimal';
+import { Comment } from '../blog/comment';
 export const protobufPackage = 'cosmonaut.blog.blog';
-const basePost = { creator: '', id: 0, title: '', body: '', commentslist: 0 };
+const basePost = { creator: '', id: 0, title: '', body: '', listofcommentids: 0 };
 export const Post = {
     encode(message, writer = Writer.create()) {
         if (message.creator !== '') {
@@ -18,17 +19,21 @@ export const Post = {
             writer.uint32(34).string(message.body);
         }
         writer.uint32(42).fork();
-        for (const v of message.commentslist) {
+        for (const v of message.listofcommentids) {
             writer.uint64(v);
         }
         writer.ldelim();
+        for (const v of message.listofcomments) {
+            Comment.encode(v, writer.uint32(50).fork()).ldelim();
+        }
         return writer;
     },
     decode(input, length) {
         const reader = input instanceof Uint8Array ? new Reader(input) : input;
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...basePost };
-        message.commentslist = [];
+        message.listofcommentids = [];
+        message.listofcomments = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
@@ -48,12 +53,15 @@ export const Post = {
                     if ((tag & 7) === 2) {
                         const end2 = reader.uint32() + reader.pos;
                         while (reader.pos < end2) {
-                            message.commentslist.push(longToNumber(reader.uint64()));
+                            message.listofcommentids.push(longToNumber(reader.uint64()));
                         }
                     }
                     else {
-                        message.commentslist.push(longToNumber(reader.uint64()));
+                        message.listofcommentids.push(longToNumber(reader.uint64()));
                     }
+                    break;
+                case 6:
+                    message.listofcomments.push(Comment.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -64,7 +72,8 @@ export const Post = {
     },
     fromJSON(object) {
         const message = { ...basePost };
-        message.commentslist = [];
+        message.listofcommentids = [];
+        message.listofcomments = [];
         if (object.creator !== undefined && object.creator !== null) {
             message.creator = String(object.creator);
         }
@@ -89,9 +98,14 @@ export const Post = {
         else {
             message.body = '';
         }
-        if (object.commentslist !== undefined && object.commentslist !== null) {
-            for (const e of object.commentslist) {
-                message.commentslist.push(Number(e));
+        if (object.listofcommentids !== undefined && object.listofcommentids !== null) {
+            for (const e of object.listofcommentids) {
+                message.listofcommentids.push(Number(e));
+            }
+        }
+        if (object.listofcomments !== undefined && object.listofcomments !== null) {
+            for (const e of object.listofcomments) {
+                message.listofcomments.push(Comment.fromJSON(e));
             }
         }
         return message;
@@ -102,17 +116,24 @@ export const Post = {
         message.id !== undefined && (obj.id = message.id);
         message.title !== undefined && (obj.title = message.title);
         message.body !== undefined && (obj.body = message.body);
-        if (message.commentslist) {
-            obj.commentslist = message.commentslist.map((e) => e);
+        if (message.listofcommentids) {
+            obj.listofcommentids = message.listofcommentids.map((e) => e);
         }
         else {
-            obj.commentslist = [];
+            obj.listofcommentids = [];
+        }
+        if (message.listofcomments) {
+            obj.listofcomments = message.listofcomments.map((e) => (e ? Comment.toJSON(e) : undefined));
+        }
+        else {
+            obj.listofcomments = [];
         }
         return obj;
     },
     fromPartial(object) {
         const message = { ...basePost };
-        message.commentslist = [];
+        message.listofcommentids = [];
+        message.listofcomments = [];
         if (object.creator !== undefined && object.creator !== null) {
             message.creator = object.creator;
         }
@@ -137,9 +158,14 @@ export const Post = {
         else {
             message.body = '';
         }
-        if (object.commentslist !== undefined && object.commentslist !== null) {
-            for (const e of object.commentslist) {
-                message.commentslist.push(e);
+        if (object.listofcommentids !== undefined && object.listofcommentids !== null) {
+            for (const e of object.listofcommentids) {
+                message.listofcommentids.push(e);
+            }
+        }
+        if (object.listofcomments !== undefined && object.listofcomments !== null) {
+            for (const e of object.listofcomments) {
+                message.listofcomments.push(Comment.fromPartial(e));
             }
         }
         return message;
