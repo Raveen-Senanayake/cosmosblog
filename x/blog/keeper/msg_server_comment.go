@@ -14,6 +14,17 @@ import (
 func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComment) (*types.MsgCreateCommentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// ensure comment creation time is within a resonable time range from current time
+	DateTimeRightNow := time.Now().UTC()
+	BlockCreationTime := ctx.BlockTime()
+	ResonableCommentingCreationLowerBound := DateTimeRightNow.Add(time.Second * 5)
+	ResonableCommentingCreationUpperBound := DateTimeRightNow.Add(time.Second * -5)
+
+	if BlockCreationTime.After(ResonableCommentingCreationLowerBound) && BlockCreationTime.After(ResonableCommentingCreationUpperBound) {
+
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("The comment creation time is not resoanble"))
+	}
+
 	var comment = types.Comment{
 		Creator: msg.Creator,
 		Body:    msg.Body,
