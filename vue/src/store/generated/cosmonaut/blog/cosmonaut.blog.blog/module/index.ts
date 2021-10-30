@@ -4,17 +4,17 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgCreateComment } from "./types/blog/tx";
 import { MsgCreatePost } from "./types/blog/tx";
-import { MsgDeleteComment } from "./types/blog/tx";
 import { MsgUpdateComment } from "./types/blog/tx";
+import { MsgCreateComment } from "./types/blog/tx";
+import { MsgDeleteComment } from "./types/blog/tx";
 
 
 const types = [
-  ["/cosmonaut.blog.blog.MsgCreateComment", MsgCreateComment],
   ["/cosmonaut.blog.blog.MsgCreatePost", MsgCreatePost],
-  ["/cosmonaut.blog.blog.MsgDeleteComment", MsgDeleteComment],
   ["/cosmonaut.blog.blog.MsgUpdateComment", MsgUpdateComment],
+  ["/cosmonaut.blog.blog.MsgCreateComment", MsgCreateComment],
+  ["/cosmonaut.blog.blog.MsgDeleteComment", MsgDeleteComment],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -43,10 +43,10 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgCreateComment: (data: MsgCreateComment): EncodeObject => ({ typeUrl: "/cosmonaut.blog.blog.MsgCreateComment", value: data }),
     msgCreatePost: (data: MsgCreatePost): EncodeObject => ({ typeUrl: "/cosmonaut.blog.blog.MsgCreatePost", value: data }),
-    msgDeleteComment: (data: MsgDeleteComment): EncodeObject => ({ typeUrl: "/cosmonaut.blog.blog.MsgDeleteComment", value: data }),
     msgUpdateComment: (data: MsgUpdateComment): EncodeObject => ({ typeUrl: "/cosmonaut.blog.blog.MsgUpdateComment", value: data }),
+    msgCreateComment: (data: MsgCreateComment): EncodeObject => ({ typeUrl: "/cosmonaut.blog.blog.MsgCreateComment", value: data }),
+    msgDeleteComment: (data: MsgDeleteComment): EncodeObject => ({ typeUrl: "/cosmonaut.blog.blog.MsgDeleteComment", value: data }),
     
   };
 };

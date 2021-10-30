@@ -22,7 +22,7 @@ func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComm
 
 	if BlockCreationTime.After(ResonableCommentingCreationLowerBound) && BlockCreationTime.After(ResonableCommentingCreationUpperBound) {
 
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("The comment creation time is not resoanble"))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("The comment creation time is not reasonable"))
 	}
 
 	var comment = types.Comment{
@@ -51,18 +51,12 @@ func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComm
 	}
 
 	if post.Creator == msg.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("Owner of the post cant comment on their own post"))
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("Owner of the post cannot comment on their own post"))
 	}
 
 	//append to list
 	currentCommentList := post.GetListofcommentids()
 	currentCommentList = append(currentCommentList, id)
-
-	// s, _ := json.Marshal(currentCommentList)
-	// if post.Id == 1 {
-	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf(string(s)))
-	// }
-	// apend to comment
 
 	currentComment := post.GetListofcomments()
 	currentComment = append(currentComment, &comment)
