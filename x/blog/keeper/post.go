@@ -64,11 +64,11 @@ func (k Keeper) GetPost(ctx sdk.Context, id uint64) (val types.Post, found bool)
 	return val, true
 }
 
-// SetPost set a specific comment in the store
+// SetPost set a specific store in the store
 func (k Keeper) SetPost(ctx sdk.Context, post types.Post) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
 	b := k.cdc.MustMarshal(&post)
-	store.Set(GetCommentIDBytes(post.Id), b)
+	store.Set(GetPostIDBytes(post.Id), b)
 }
 
 // GetPostIDBytes returns the byte representation of the ID
