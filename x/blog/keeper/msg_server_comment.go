@@ -58,6 +58,10 @@ func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComm
 	currentCommentList := post.GetListofcommentids()
 	currentCommentList = append(currentCommentList, id)
 
+	// s, _ := json.Marshal(currentCommentList)
+	// if post.Id == 1 {
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf(string(s)))
+	// }
 	// apend to comment
 
 	currentComment := post.GetListofcomments()
@@ -66,6 +70,7 @@ func (k msgServer) CreateComment(goCtx context.Context, msg *types.MsgCreateComm
 	// create updated post
 	var updatedpost = types.Post{
 		Creator:          post.GetCreator(),
+		Id:               post.GetId(),
 		Title:            post.GetTitle(),
 		Body:             post.GetBody(),
 		Listofcommentids: currentCommentList,
